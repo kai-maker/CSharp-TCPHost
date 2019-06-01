@@ -24,6 +24,8 @@ namespace TCPHostGUI
         }
         void OnClickButton1(object sender, RoutedEventArgs e)
         {
+            _multicastHost.LocalPort = 10000;
+            _multicastHost.RemotePort = 10000;
             _multicastHost.Receive();
             _multicastHost.Send("aaaa");
         }
