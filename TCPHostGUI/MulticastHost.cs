@@ -40,7 +40,7 @@ namespace TCPHostGUI
             _localPort = localPort;
             _endPointIp = endPointIp;
             _remotePort = remotePort;
-            _multicastGroupEndPoint = new IPEndPoint(IPAddress.Parse(EndPointIp), _remotePort);
+            _multicastGroupEndPoint = new IPEndPoint(IPAddress.Parse(_endPointIp), _remotePort);
             _multicastClient = new UdpClient(_localPort, addressFamily);
             _multicastClient.JoinMulticastGroup(_multicastGroupEndPoint.Address, 50);
         }
@@ -49,7 +49,7 @@ namespace TCPHostGUI
         {
             _multicastClient.Close();
             _multicastClient = new UdpClient(_localPort, addressFamily);
-            _multicastGroupEndPoint = new IPEndPoint(IPAddress.Parse(EndPointIp), _remotePort);
+            _multicastGroupEndPoint = new IPEndPoint(IPAddress.Parse(_endPointIp), _remotePort);
             _multicastClient.JoinMulticastGroup(_multicastGroupEndPoint.Address, 50);
         }
 
