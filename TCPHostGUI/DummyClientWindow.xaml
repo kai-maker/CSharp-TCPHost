@@ -1,0 +1,28 @@
+<Window x:Class="TCPHostGUI.DummyClientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:TCPHostGUI"
+        mc:Ignorable="d"
+        Title="DummyClientWindow" Height="350" Width="525" Background="Gray"
+        Closing="OnClosingWindow">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Row="1">
+                <Button Margin="5,5,0,5" Name="btn1" Background="Pink" BorderBrush="Black" BorderThickness="1" ClickMode="Release" Click="OnMulticastStartButton">Wait Scan</Button>
+                <Button Margin="5,5,0,5" Name="btn2" Background="Pink" BorderBrush="Black" BorderThickness="1" ClickMode="Release" Click="OnIpAddrButton">IpAddr</Button>
+
+            </StackPanel>
+        </Grid>
+        <TextBox Name="tb" Grid.Column="1" IsReadOnly="True" Margin="5,5,5,5"/>
+    </Grid>
+</Window>

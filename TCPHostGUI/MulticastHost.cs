@@ -64,6 +64,13 @@ namespace TCPHostGUI
                     {
                         Console.WriteLine($@"{task.Result} バイト送信しました");
                     }, TaskScheduler.FromCurrentSynchronizationContext());
+                for (int i = 1; i < 10; i++)
+                {
+                    var endPoint = _multicastGroupEndPoint;
+                    endPoint.Port = _multicastGroupEndPoint.Port + i;
+                    _multicastClient.SendAsync(messageBytes, message.Length, endPoint);
+                }
+                
 
             }
             catch (SocketException e)
@@ -86,6 +93,11 @@ namespace TCPHostGUI
             {
                 Console.WriteLine(e);
             }
+        }
+
+        public void Close()
+        {
+            _multicastClient.Close();
         }
     }
 }

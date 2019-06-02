@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TCPHostGUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" Background="Gray">
+        Title="MainWindow" Height="350" Width="525" Background="Gray"
+        Closing="OnClosingWindow">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
@@ -17,8 +18,10 @@
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Row="1">
-                <Button Margin="5,5,0,5" Name="btn1" Background="Pink" BorderBrush="Black" BorderThickness="1" ClickMode="Release" Click="OnClickButton1">ClickMe1</Button>
-                <Button Margin="5,5,0,5" Name="btn2" Background="Pink" BorderBrush="Black" BorderThickness="1" ClickMode="Release" Click="OnClickButton1">ClickMe1</Button>
+                <Button Margin="5,5,0,5" Name="btn1" Background="Pink" BorderBrush="Black" BorderThickness="1" ClickMode="Release" Click="OnScanButton">Scan</Button>
+                <Button Margin="5,5,0,5" Name="btn2" Background="Pink" BorderBrush="Black" BorderThickness="1" ClickMode="Release" Click="OnTcpListenButton">TcpListen</Button>
+                <Button Margin="5,5,0,5" Name="dummyClientButton" Background="PowderBlue" BorderBrush="Black" BorderThickness="3" ClickMode="Release" Click="OnClickDummyClientButton">Dummy Client</Button>
+                <Button Margin="5,5,0,5" Name="btnIpAddr" Background="Pink" BorderBrush="Black" BorderThickness="1" ClickMode="Release" Click="OnIpAddrButton">IpAddr</Button>
 
             </StackPanel>
         </Grid>
