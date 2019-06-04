@@ -20,25 +20,28 @@ namespace TCPHostGUI
         {
             InitializeComponent();
             _multicastHost = new MulticastHost(34000, "239.0.1.111", 37000);
-            _multicastHost.OnReceiveEvent += result =>
-            {
-                var message = Encoding.UTF8.GetString(result.Buffer);
-                Console.WriteLine($@"{result.Buffer.Length} バイト受信しました : {message}");
-                tb.Text += "receive : " + message + "\n";
-                Console.WriteLine($@"{result.RemoteEndPoint.Address} : {result.RemoteEndPoint.Port}");
-            };
             _tcpServer = new TCPServer(GetLocalIp.Get(), 40000);
             _tcpServer.Accept();
-            _tcpServer.OnReceiveEvent += message =>
+            _tcpServer.OnReceiveEvent += (message, tcpClient) =>
             {
-                tb.Text += "receive : " + message + "\n";
+                tb.Text += $"From [{tcpClient.Client.RemoteEndPoint}]\n\t=> : {message}\n";
                 _tcpServer.Receive();
             };
+            _tcpServer.OnConnectEvent += client =>
+            {
+                tb.Text += $"Connected to [{client.Client.RemoteEndPoint}] (TCP)\n";
+            };
         }
+        void OnSendButton(object sender, RoutedEventArgs e)
+        {
+            _tcpServer.Send(SendTb.Text);
+            SendTb.Text = "";
+        }
+        
 
         void OnScanButton(object sender, RoutedEventArgs e)
         {
-            _multicastHost.Send("Hello!! From Server");
+            _multicastHost.Send("Hello!! from server");
         }
 
         void OnTcpListenButton(object sender, RoutedEventArgs e)

@@ -9,12 +9,23 @@ namespace TCPHostGUI
         private TcpClient _client;
         private Int32 _remotePort;
         private String _remoteIp;
+        
+        public event Action<string, TcpClient> OnReceiveEvent;
+        public event Action<TcpClient> OnConnectEvent;
 
-        public TCPClient(string remoteIp, int remotePort)
+        public bool Connected => _client.Connected;
+
+        public TCPClient()
+        {
+            _client = new TcpClient();
+        }
+
+        public void Connect(string remoteIp, int remotePort)
         {
             _remotePort = remotePort;
             _remoteIp = remoteIp;
-            _client = new TcpClient(_remoteIp, _remotePort);
+            _client.ConnectAsync(_remoteIp, _remotePort);
+            OnConnectEvent?.Invoke(_client);
         }
 
         public void Send(string message)
@@ -35,7 +46,7 @@ namespace TCPHostGUI
             {
                 var message = Encoding.UTF8.GetString(byteMessage, 0, task.Result);
                 Console.Write($"Receive : {message} (Server)");
-                //OnReceiveEvent();
+                OnReceiveEvent?.Invoke(message, _client);
             });
         }
     }

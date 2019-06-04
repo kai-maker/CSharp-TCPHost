@@ -17,13 +17,24 @@ namespace TCPHostGUI
             _multicastHost.OnReceiveEvent += result =>
             {
                 var message = Encoding.UTF8.GetString(result.Buffer);
-                Console.WriteLine($@"{result.Buffer.Length} バイト受信しました : {message}");
-                tb.Text += "receive : " + message + "\n";
+                //Console.WriteLine($@"{result.Buffer.Length} バイト受信しました : {message}");
+                tb.Text += $"from [{result.RemoteEndPoint}] (UDP)\n\t=> {message}\n";
                 Console.WriteLine($@"{result.RemoteEndPoint.Address} : {result.RemoteEndPoint.Port}");
                 _multicastHost.Receive();
-                if(_tcpClient == null)
-                    _tcpClient = new TCPClient(result.RemoteEndPoint.Address.ToString(), 40000);
-                _tcpClient.Send("kita-");
+                if (!_tcpClient.Connected)
+                {
+                    _tcpClient.Connect(result.RemoteEndPoint.Address.ToString(), 40000);
+                    _tcpClient.Receive();
+                }
+
+                _tcpClient.Send("Echo from client");
+            };
+            _tcpClient = new TCPClient();
+            _tcpClient.OnConnectEvent += client => { tb.Text += $"Connected to [{client.Client.RemoteEndPoint}] (TCP)\n"; };
+            _tcpClient.OnReceiveEvent += (message, client) =>
+            {
+                tb.Text += $"From [{client.Client.RemoteEndPoint}]\n\t=> : {message} (TCP)\n";
+                _tcpClient.Receive();
             };
             OnMulticastStartButton(null, null);
         }
@@ -41,6 +52,12 @@ namespace TCPHostGUI
         public void OnClosingWindow(object sender, CancelEventArgs e)
         {
             _multicastHost.Close();
+        }
+        
+        void OnSendButton(object sender, RoutedEventArgs e)
+        {
+            _tcpClient.Send(SendTb.Text);
+            SendTb.Text = "";
         }
     }
 }

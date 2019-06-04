@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -9,18 +10,15 @@ namespace TCPHostGUI
 {
     public class TCPServer
     {
-        private Int32 _localPort;
-        private IPAddress _localAddr;
         private TcpListener _listener;
-        private TcpClient _client;
+        private List<TcpClient> _clients = new List<TcpClient>();
         
-        public event Action<string> OnReceiveEvent;
+        public event Action<string, TcpClient> OnReceiveEvent;
+        public event Action<TcpClient> OnConnectEvent;
 
         public TCPServer(string localAddr, int localPort)
         {
-            _localAddr = IPAddress.Parse(localAddr);
-            _localPort = localPort;
-            _listener = new TcpListener(_localAddr, _localPort);
+            _listener = new TcpListener(IPAddress.Parse(localAddr), localPort);
             _listener.Start();
         }
 
@@ -29,16 +27,17 @@ namespace TCPHostGUI
             _listener.AcceptTcpClientAsync().ContinueWith(task =>
             {
                 var client = task.Result;
-                _client = client;
+                _clients.Add(client);
                 Console.WriteLine("Connected(Server)");
-                Console.WriteLine($"Remote IP is : {_client.Client.RemoteEndPoint}");
+                Console.WriteLine($"Remote IP is : {client.Client.RemoteEndPoint}");
+                OnConnectEvent(client);
                 Accept();
-            });
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public void Receive()
         {
-            if (_client == null)
+            if (_clients.Count == 0)
             {
                 Task.Delay(1000).ContinueWith(t =>
                 {
@@ -47,23 +46,29 @@ namespace TCPHostGUI
                 return;
             }
             var bytes = new Byte[256];
-            var stream = _client.GetStream();
-            stream.ReadAsync(bytes, 0, bytes.Length).ContinueWith(task =>
+            foreach (var client in _clients)
             {
-                string message = Encoding.UTF8.GetString(bytes, 0, task.Result);
-                Console.WriteLine($"Reveive : {message} (Server)");
-                OnReceiveEvent?.Invoke(message);
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+                var stream = client.GetStream();
+                stream.ReadAsync(bytes, 0, bytes.Length).ContinueWith(task =>
+                {
+                    string message = Encoding.UTF8.GetString(bytes, 0, task.Result);
+                    Console.WriteLine($"Reveive : {message} (Server)");
+                    OnReceiveEvent?.Invoke(message, client);
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+            }
         }
 
         public void Send(string message)
         {
-            var byteMessage = Encoding.UTF8.GetBytes(message);
-            var stream = _client.GetStream();
-            stream.WriteAsync(byteMessage, 0, byteMessage.Length).ContinueWith(task =>
+            foreach (var client in _clients)
             {
-                Console.WriteLine("Sent(Server)");
-            });
+                var byteMessage = Encoding.UTF8.GetBytes(message);
+                var stream = client.GetStream();
+                stream.WriteAsync(byteMessage, 0, byteMessage.Length).ContinueWith(task =>
+                {
+                    Console.WriteLine("Sent(Server)");
+                });
+            }
         }
     }
 }

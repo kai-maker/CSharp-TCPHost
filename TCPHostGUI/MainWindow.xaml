@@ -9,7 +9,7 @@
         Closing="OnClosingWindow">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
@@ -17,12 +17,19 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <TextBox Name="SendTb" Grid.Row="0" Margin="5,5,5,5"/>
+                <Button Name="sendButton" Background="Pink" Margin="5,5,5,5" Grid.Row="1" BorderThickness="1" Width="50" Height="30" HorizontalAlignment="Right" Click="OnSendButton">Send</Button>
+            </Grid>
             <StackPanel Orientation="Horizontal" Grid.Row="1">
                 <Button Margin="5,5,0,5" Name="btn1" Background="Pink" BorderBrush="Black" BorderThickness="1" ClickMode="Release" Click="OnScanButton">Scan</Button>
                 <Button Margin="5,5,0,5" Name="btn2" Background="Pink" BorderBrush="Black" BorderThickness="1" ClickMode="Release" Click="OnTcpListenButton">TcpListen</Button>
                 <Button Margin="5,5,0,5" Name="dummyClientButton" Background="PowderBlue" BorderBrush="Black" BorderThickness="3" ClickMode="Release" Click="OnClickDummyClientButton">Dummy Client</Button>
                 <Button Margin="5,5,0,5" Name="btnIpAddr" Background="Pink" BorderBrush="Black" BorderThickness="1" ClickMode="Release" Click="OnIpAddrButton">IpAddr</Button>
-
             </StackPanel>
         </Grid>
         <TextBox Name="tb" Grid.Column="1" IsReadOnly="True" Margin="5,5,5,5"/>

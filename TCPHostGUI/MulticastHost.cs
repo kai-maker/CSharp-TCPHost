@@ -59,19 +59,14 @@ namespace TCPHostGUI
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
             try
             {
-                _multicastClient.SendAsync(messageBytes, message.Length, _multicastGroupEndPoint)
-                    .ContinueWith(task =>
-                    {
-                        Console.WriteLine($@"{task.Result} バイト送信しました");
-                    }, TaskScheduler.FromCurrentSynchronizationContext());
-                for (int i = 1; i < 10; i++)
+                for (int i = 0; i < 5; i++)
                 {
-                    var endPoint = _multicastGroupEndPoint;
-                    endPoint.Port = _multicastGroupEndPoint.Port + i;
-                    _multicastClient.SendAsync(messageBytes, message.Length, endPoint);
+                    var endPoint = new IPEndPoint(_multicastGroupEndPoint.Address, _multicastGroupEndPoint.Port);
+                    endPoint.Port = endPoint.Port + i;
+                    _multicastClient.SendAsync(messageBytes, message.Length, endPoint)
+                        .ContinueWith(task => { Console.WriteLine($@"{task.Result} バイト送信しました"); },
+                            TaskScheduler.FromCurrentSynchronizationContext());
                 }
-                
-
             }
             catch (SocketException e)
             {
