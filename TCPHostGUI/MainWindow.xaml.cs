@@ -31,6 +31,8 @@ namespace TCPHostGUI
             {
                 tb.Text += $"Connected to [{client.Client.RemoteEndPoint}] (TCP)\n";
             };
+            tb.Text += "Start TCP Receive...\n";
+            _tcpServer.Receive();
         }
         void OnSendButton(object sender, RoutedEventArgs e)
         {
