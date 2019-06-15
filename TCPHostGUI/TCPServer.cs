@@ -54,6 +54,11 @@ namespace TCPHostGUI
                     string message = Encoding.UTF8.GetString(bytes, 0, task.Result);
                     Console.WriteLine($"Reveive : {message} (Server)");
                     OnReceiveEvent?.Invoke(message, client);
+                    if (message.Length == 0)
+                    {
+                        Console.WriteLine($@"Passive Closing : {client.Client.RemoteEndPoint}");
+                        client.Close();
+                    }
                 }, TaskScheduler.FromCurrentSynchronizationContext());
             }
         }
