@@ -23,7 +23,7 @@ namespace TCPHostGUI
                     string addr_str = addr.ToString();
 
                     //IPv4 && localhostでない
-                    if ( addr_str.IndexOf( "." ) > 0 && !addr_str.StartsWith( "127." ) )
+                    if ( addr_str.IndexOf( "." ) > 0 && !addr_str.StartsWith( "127." ) && !addr_str.StartsWith( "10." ))
                     {
                         addr_ip = addr_str;
                         break;
